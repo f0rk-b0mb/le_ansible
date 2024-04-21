@@ -1,0 +1,25 @@
+---
+- name: Create "sshers" group
+  group:
+    name: sshers
+    gid: 6666
+
+- name: Add user "rkhunter" to "sshers" group
+  user:
+    name: rkhunter
+    groups: sshers
+    append: true
+
+- name: Install config for SSH server
+  template:
+    src: ssh_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
+
+- name: restart sshd
+  shell: service sshd restart
+
+- name: set new ansible_ssh_port
+  set_fact: ansible_ssh_port=2299

@@ -1,0 +1,19 @@
+---
+  - hosts: "{{ target }}"
+    # special aport
+    vars:
+      ansible_port: "{{ aport | default('22') }}"
+    # remote user
+    remote_user: rkhunter
+    # become sudo
+    become: yes
+    # role to start
+    roles:
+      - upgrade_deb
+      - hostnames
+      - users
+      - ssh
+      - aliases
+      - ufw
+      - motd
+      - fail2ban

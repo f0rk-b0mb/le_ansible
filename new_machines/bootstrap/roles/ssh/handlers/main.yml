@@ -1,0 +1,7 @@
+---
+# handlers for ssh role
+
+- name: restart ssh
+  service:
+    name: "{{ ssh_service }}"
+    state: restarted

@@ -1,0 +1,4 @@
+---
+- import_tasks: sudo_cfg.yml
+- import_tasks: user_cfg.yml
+- import_tasks: upload_pubkey.yml

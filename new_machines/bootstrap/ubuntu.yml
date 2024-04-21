@@ -1,0 +1,12 @@
+---
+  - name: Install some additional software
+    apt:
+      pkg:
+        - tmux
+        - curl
+        - wget
+        - python3
+        - htop
+        - btop
+#        - rkhunter
+      state: present

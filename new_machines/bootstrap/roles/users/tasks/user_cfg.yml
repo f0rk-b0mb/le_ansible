@@ -1,0 +1,22 @@
+---
+# - name: Create "rkhunter" user
+#   user:
+#     name: rkhunter
+#     shell: /bin/bash
+#     uid: 666
+#     group: users
+#     groups: sudo
+#     append: true
+#     password: $1$Ap7a7AQU$.0gM6wDX19fPmgQFBiQf70
+
+- name: Add user "rkhunter" to "sudo-nopasswd" group
+  user:
+    name: rkhunter
+    groups: sudo-nopasswd
+    append: true
+  when: passwordless_sudo is defined and passwordless_sudo == true
+
+- name: Remove user "rkhunter" from "sudo-nopasswd" group
+  shell: /usr/sbin/delgroup rkhunter sudo-nopasswd
+  when: not (passwordless_sudo is defined and passwordless_sudo == true)
+  ignore_errors: yes

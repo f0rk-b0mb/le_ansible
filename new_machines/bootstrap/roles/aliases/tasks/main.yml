@@ -1,0 +1,16 @@
+---
+- name: copy rkhunter´s .bashrc
+  copy:
+    src: .bashrc_rkhunter
+    dest: /home/rkhunter/.bashrc
+    owner: rkhunter
+    group: users
+    mode: 0644
+
+- name: copy root´s .bashrc
+  copy:
+    src: .bashrc_root
+    dest: /root/.bashrc
+    owner: root
+    group: root
+    mode: 0644

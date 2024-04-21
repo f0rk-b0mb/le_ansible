@@ -1,0 +1,6 @@
+---
+ - include: install_check_before.yml
+   tags: installchecks
+
+ - include: unattended-upgrades.yml
+   tags: unattended

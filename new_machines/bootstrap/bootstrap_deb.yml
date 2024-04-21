@@ -1,0 +1,41 @@
+---
+  - hosts: "{{ target }}"
+    # special aport
+    vars:
+      ansible_port: "{{ aport | default('22') }}"
+    # remote user
+    remote_user: rkhunter
+    # become sudo
+    become: yes
+    # role to start
+    roles:
+      - unattend_upgrade_deb
+      - hostnames
+      - users
+      - ssh
+      - aliases
+#      - ufw
+      - ufw_accept_all
+      - motd
+      - fail2ban
+
+    post_tasks:
+      - include_tasks: ubuntu.yml
+        when:
+          - ansible_os_family == "Debian"
+
+      - include_tasks: rocky.yml
+        when: ansible_os_family == "RedHat"
+
+      - name: Reboot host
+        shell: sleep 2 && shutdown -r now "rebooting..."
+        async: 1
+        poll: 0
+        ignore_errors: yes
+
+      - name: Wait for the reboot and reconnect
+        reboot:
+          reboot_timeout: 300
+
+      - name: set time/date Berlin
+        shell: "timedatectl set-timezone Europe/Berlin"

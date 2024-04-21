@@ -1,0 +1,16 @@
+---
+- name: Create "rkhunter" user's .ssh directory
+  file:
+    path: /home/rkhunter/.ssh
+    state: directory
+    owner: rkhunter
+    group: users
+    mode: 0700
+
+- name: Copy "rkhunter" user's authorized_keys
+  copy:
+    src: authorized_key_rkhunter
+    dest: /home/rkhunter/.ssh/authorized_keys
+    owner: rkhunter
+    group: users
+    mode: 0600

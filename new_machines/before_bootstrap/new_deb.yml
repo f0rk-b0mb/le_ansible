@@ -1,0 +1,11 @@
+---
+  - hosts: "{{ target }}"
+    # sammle keine info über den server (funktioniert erst wenn python installiert ist)
+    gather_facts: false
+    # remote user
+#    remote_user: nwadmin
+    # werde sudo
+    become: yes
+    # auszuführende Rollen
+    roles:
+      - install_std_software_deb

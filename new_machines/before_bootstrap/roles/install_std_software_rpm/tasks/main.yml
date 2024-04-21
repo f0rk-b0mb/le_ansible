@@ -1,0 +1,35 @@
+---
+ - name: Check if dnf is installed - if not then change it
+   yum:
+     name: dnf
+     state: present
+     update_cache: yes
+
+ - name: Enable EPEL Repository on CentOS / Rocky
+   dnf:
+     name: epel-release
+     state: latest
+     update_cache: yes
+
+ - name: Install python3
+   dnf:
+     name: python3
+     state: present
+     update_cache: yes
+
+ - name: Install some software
+   dnf:
+     name:
+        - tmux
+        - vim
+        - curl
+#        - fail2ban
+#        - rkhunter
+     state: present
+     update_cache: yes
+
+ - name: Upgrade everything - DO NOT CANCEL THIS! TAKES LONG TIME! -
+   dnf:
+     name:  "*"
+     state: latest
+     update_cache: yes
