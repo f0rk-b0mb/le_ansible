@@ -8,6 +8,7 @@
         - python3
         - htop
         - btop
+        - vim
       state: present
 
   - name: Update APT cache
