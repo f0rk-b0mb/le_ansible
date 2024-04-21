@@ -13,4 +13,5 @@
         - php-imagick 
         - php-zip 
         - php-xmlrpc
+        - python3-certbot-nginx
       state: present
