@@ -1,7 +1,7 @@
 ---
   - hosts: "{{ target }}"
     # remote user
-    remote_user: root
+    remote_user: "{{ ssh_user }}"
     # become sudo
     become: yes
     # role to start

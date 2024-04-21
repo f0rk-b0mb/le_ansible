@@ -4,7 +4,7 @@
     vars:
       ansible_port: "{{ aport | default('22') }}"
     # remote user
-    remote_user: rkhunter
+    remote_user: "{{ ssh_user }}"
     # become sudo
     become: yes
     # role to start

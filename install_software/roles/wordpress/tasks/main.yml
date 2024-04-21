@@ -1,0 +1,16 @@
+  - name: Install packaged needed for wordpress
+    apt:
+      pkg:
+        - nginx 
+        - mariadb-server 
+        - php 
+        - php-fpm 
+        - php-curl 
+        - php-mysql 
+        - php-gd 
+        - php-mbstring 
+        - php-xml 
+        - php-imagick 
+        - php-zip 
+        - php-xmlrpc
+      state: present
