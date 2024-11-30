@@ -39,7 +39,7 @@
       - name: Run hostnames role
         include_role:
           name: hostnames
-        when: not hostname_done.stat.exists
+        when: not hostnames_done.stat.exists
 
       - name: Check if role users has been executed
         stat:
