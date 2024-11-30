@@ -1,4 +1,4 @@
 ---
 # defaults for ssh config
 ssh_port: 2299
-ssh_service: sshd
+ssh_service: ssh
