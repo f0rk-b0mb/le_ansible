@@ -7,7 +7,7 @@
 - name: Skip this role if already executed
   meta: end_play
   when: role_check.stat.exists
-  
+
 # tasks file for fail2ban
 
 - name: import assert.yml
@@ -77,6 +77,14 @@
     name: "{{ fail2ban_service }}"
     state: started
     enabled: yes
+
+- name: Ensure log directory exists
+  file:
+    path: /var/log/ansible
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Mark this role as executed
   file:

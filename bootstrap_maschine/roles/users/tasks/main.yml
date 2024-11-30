@@ -12,6 +12,14 @@
 - import_tasks: user_cfg.yml
 - import_tasks: upload_pubkey.yml
 
+- name: Ensure log directory exists
+  file:
+    path: /var/log/ansible
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+    
 - name: Mark this role as executed
   file:
     path: "/var/log/ansible/{{ role_name }}.done"
