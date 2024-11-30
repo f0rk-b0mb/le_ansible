@@ -1,0 +1,61 @@
+- name: Check if this role has already been executed
+  stat:
+    path: "/var/log/ansible/{{ role_name }}.done"
+  register: role_check
+
+- name: Skip this role if already executed
+  meta: end_play
+  when: role_check.stat.exists
+
+- name: Ensure additional software is installed
+  package:
+    name:
+      - tmux
+      - curl
+      - wget
+      - python3
+      - htop
+      - btop
+      - vim
+    state: present
+
+- name: Update package cache (Debian-based systems)
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Update package cache (Red Hat-based systems)
+  ansible.builtin.yum:
+    update_cache: yes
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Upgrade all packages to latest version (Debian-based systems)
+  ansible.builtin.apt:
+    upgrade: dist
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Upgrade all packages to latest version (Red Hat-based systems)
+  ansible.builtin.yum:
+    name: "*"
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Reboot host
+  shell: sleep 2 && shutdown -r now "rebooting..."
+  async: 1
+  poll: 0
+  ignore_errors: yes
+
+- name: Wait for the reboot and reconnect
+  reboot:
+    reboot_timeout: 300
+
+- name: set time/date Berlin
+  shell: "timedatectl set-timezone Europe/Berlin"
+
+- name: Mark this role as executed
+  file:
+    path: "/var/log/ansible/{{ role_name }}.done"
+    state: touch
+    mode: "0644"
