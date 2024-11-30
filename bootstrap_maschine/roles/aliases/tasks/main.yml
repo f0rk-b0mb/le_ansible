@@ -1,16 +1,161 @@
 ---
-- name: copy rkhunter´s .bashrc
+# Installiere zsh und benötigte Abhängigkeiten
+- name: Install zsh and dependencies
+  apt:
+    name:
+      - zsh
+      - git
+      - curl
+    state: present
+    update_cache: yes
+
+# Setze zsh als Standard-Shell für root und rkhunter
+- name: Set zsh as default shell for rkhunter
+  user:
+    name: rkhunter
+    shell: /usr/bin/zsh
+
+- name: Set zsh as default shell for root
+  user:
+    name: root
+    shell: /usr/bin/zsh
+
+# Installiere Oh My Zsh für beide Benutzer
+- name: Install Oh My Zsh for rkhunter
+  shell: |
+    curl -Lo install.sh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    RUNZSH=no sh install.sh
+    rm install.sh
+  args:
+    chdir: /home/rkhunter
+  become: yes
+  become_user: rkhunter
+
+- name: Install Oh My Zsh for root
+  shell: |
+    curl -Lo install.sh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    RUNZSH=no sh install.sh
+    rm install.sh
+  args:
+    chdir: /root
+
+# Installiere Plugins für zsh
+- name: Install zsh-autosuggestions plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ item }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    version: master
+  with_items:
+    - /home/rkhunter
+    - /root
+  become: yes
+
+- name: Install zsh-syntax-highlighting plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting
+    dest: "{{ item }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    version: master
+  with_items:
+    - /home/rkhunter
+    - /root
+  become: yes
+
+# Kopiere die angepasste .zshrc mit den gewünschten Plugins
+- name: Deploy .zshrc for rkhunter
   copy:
-    src: .bashrc_rkhunter
+    content: |
+      # Path to your Oh My Zsh installation.
+      export ZSH="$HOME/.oh-my-zsh"
+
+      ZSH_THEME="rkhunter"
+
+      CASE_SENSITIVE="true"
+      ENABLE_CORRECTION="true"
+      DISABLE_UNTRACKED_FILES_DIRTY="true"
+      HIST_STAMPS="dd.mm.yyyy"
+
+      plugins=(
+        git
+        colored-man-pages
+        command-not-found
+        zsh-autosuggestions
+        zsh-completions
+        zsh-history-substring-search
+        zsh-syntax-highlighting
+      )
+
+      source $ZSH/oh-my-zsh.sh
+
+      if [[ -n $SSH_CONNECTION ]]; then
+        export EDITOR='vim'
+      else
+        export EDITOR='nvim'
+      fi
+    dest: /home/rkhunter/.zshrc
+    owner: rkhunter
+    group: users
+    mode: 0644
+
+- name: Deploy .zshrc for root
+  copy:
+    content: |
+      # Path to your Oh My Zsh installation.
+      export ZSH="$HOME/.oh-my-zsh"
+
+      ZSH_THEME="rkhunter"
+
+      CASE_SENSITIVE="true"
+      ENABLE_CORRECTION="true"
+      DISABLE_UNTRACKED_FILES_DIRTY="true"
+      HIST_STAMPS="dd.mm.yyyy"
+
+      plugins=(
+        git
+        colored-man-pages
+        command-not-found
+        zsh-autosuggestions
+        zsh-completions
+        zsh-history-substring-search
+        zsh-syntax-highlighting
+      )
+
+      source $ZSH/oh-my-zsh.sh
+
+      if [[ -n $SSH_CONNECTION ]]; then
+        export EDITOR='vim'
+      else
+        export EDITOR='nvim'
+      fi
+    dest: /root/.zshrc
+    owner: root
+    group: root
+    mode: 0644
+
+# Backup: Kopiere die .bashrc-Dateien
+- name: Copy .bashrc for rkhunter
+  copy:
+    src: files/.bashrc_rkhunter
     dest: /home/rkhunter/.bashrc
     owner: rkhunter
     group: users
     mode: 0644
 
-- name: copy root´s .bashrc
+- name: Copy .bashrc for root
   copy:
-    src: .bashrc_root
+    src: files/.bashrc_root
     dest: /root/.bashrc
     owner: root
     group: root
     mode: 0644
+
+# Kopiere das benutzerdefinierte Zsh-Theme
+- name: Copy custom rkhunter.zsh-theme
+  copy:
+    src: files/rkhunter.zsh-theme
+    dest: "{{ item }}/.oh-my-zsh/themes/rkhunter.zsh-theme"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644
+  with_items:
+    - /home/rkhunter
+    - /root

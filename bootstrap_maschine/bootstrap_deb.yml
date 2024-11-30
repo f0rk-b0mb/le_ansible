@@ -14,7 +14,7 @@
       - users
       - ssh
       - aliases
-#      - ufw
+      - ufw
       - ufw_accept_all
       - motd
       - fail2ban
