@@ -1,27 +1,25 @@
 ---
 # defaults file for motd
 
-motd_sysadmins_signature: SyS-Admin
-motd_sysadmins_email: us@linux-engineer.net
+motd_sysadmins_signature: "{{ motd_sysadmins_signature | default('SyS-Admin') }}"
+motd_sysadmins_email: "{{ motd_sysadmins_email | default('us@linux-engineer.net') }}"
 
 motd_info:
+  - " System Information: "
   - " FQDN:    ": "{{ ansible_fqdn }}"
   - " Distro:  ": "{{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_distribution_release }}"
-  - " Virtual: ": "{{ 'YES' if ansible_virtualization_role == 'guest' else 'NO' }}\n"
+  - " Virtual: ": "{{ '\033[0;32mYES\033[0m' if ansible_virtualization_role == 'guest' else '\033[0;31mNO\033[0m' }}"
   - " CPUs:    ": "{{ ansible_processor_vcpus }}"
   - " RAM:     ": "{{ (ansible_memtotal_mb / 1000) | round(1) }}GB"
+  - " Network Information: "
+  - " IP:      ": "{{ ansible_default_ipv4.address }}"
+  - " Gateway: ": "{{ ansible_default_ipv4.gateway }}"
+  - " Disk:    ": "{{ ansible_mounts[0].size_total / 1000 ** 3 | round(1) }}GB"
 
 motd_content: |
-
   --------------------------------------------------------------------------
                       This system is managed by Ansible
   --------------------------------------------------------------------------
-
-  This is {{ ansible_fqdn }} running {{ ansible_distribution }}.
-
-  NOTE: System and application configuration for this host is managed by
-  automated systems. To ensure that any changes you make here are not lost,
-  please contact with your system administrators.
 
                    _     _                    _               
                   | |   | |                  | |              
@@ -30,18 +28,18 @@ motd_content: |
             | |   |   < | | | || |_| || | | || |_ |  __/| |   
             |_|   |_|\_\|_| |_| \__,_||_| |_| \__| \___||_|   
                                                               
-           
 
-  {% for item in motd_info %}
-  {% for key, value in item.items() | list %}
-  {{ key }}{{ value }}
-  {% endfor %}
-  {% endfor %}
+  Hostname:   {{ ansible_fqdn }}
+  Distro:     {{ ansible_distribution }} {{ ansible_distribution_version }}
+  Virtual:    {{ '\033[0;32mYES\033[0m' if ansible_virtualization_role == 'guest' else '\033[0;31mNO\033[0m' }}
+  CPUs:       {{ ansible_processor_vcpus }}
+  RAM:        {{ (ansible_memtotal_mb / 1000) | round(1) }}GB
+  Disk:       {{ ansible_mounts[0].size_total / 1000 ** 3 | round(1) }}GB
+  IP:         {{ ansible_default_ipv4.address }}
+  Gateway:    {{ ansible_default_ipv4.gateway }}
 
-  Yours,
-  {{ motd_sysadmins_signature }}
-  email: {{ motd_sysadmins_email }}
-
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  --------------------------------------------------------------------------
+  Please contact your administrator at {{ motd_sysadmins_email }} if needed.
+  --------------------------------------------------------------------------
 
   Last ansible run: {{ ansible_date_time.iso8601 }}
