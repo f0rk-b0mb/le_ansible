@@ -1,6 +1,6 @@
 ---
- - include: install_check_before.yml
+ - include_task: install_check_before.yml
    tags: installchecks
 
- - include: unattended-upgrades.yml
+ - include_task: unattended-upgrades.yml
    tags: unattended
