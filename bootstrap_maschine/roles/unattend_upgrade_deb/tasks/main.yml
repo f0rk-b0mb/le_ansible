@@ -1,12 +1,19 @@
 ---
-  - name: Check if this role has already been executed
-    stat:
-      path: "/var/log/ansible/{{ role_name }}.done"
-    register: role_check
+  - block:
+      - name: Check if this role has already been executed
+        stat:
+          path: "/var/log/ansible/{{ role_name }}.done"
+        register: role_check
 
-  - name: Skip this role if already executed
-    meta: end_play
-    when: role_check.stat.exists
+      - name: Skip this role if already executed
+        debug:
+          msg: "Skipping role {{ role_name }} as it has already been executed."
+        when: role_check.stat.exists
+
+      - name: Proceed with the role
+        include_tasks: main.yml
+        when: not role_check.stat.exists
+    tags: "{{ role_name }}"
 
   - include_tasks: unattended-upgrades.yml
     tags: unattended
