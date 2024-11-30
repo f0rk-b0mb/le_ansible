@@ -18,8 +18,26 @@
     group: root
     mode: 0644
 
-- name: restart sshd
-  shell: service sshd restart
+- name: Check if ssh or sshd service exists
+  shell: |
+    if systemctl list-units --type=service | grep -q sshd.service; then
+      echo sshd.service;
+    elif systemctl list-units --type=service | grep -q ssh.service; then
+      echo ssh.service;
+    else
+      echo none;
+    fi
+  register: ssh_service_check
+
+- name: Restart the SSH service
+  shell: |
+    if [ "{{ ssh_service_check.stdout }}" != "none" ]; then
+      systemctl restart {{ ssh_service_check.stdout }};
+    else
+      echo "No SSH service found, skipping restart.";
+    fi
+  changed_when: ssh_service_check.stdout != "none"
+  ignore_errors: true
 
 - name: set new ansible_ssh_port
   set_fact: ansible_ssh_port=2299
