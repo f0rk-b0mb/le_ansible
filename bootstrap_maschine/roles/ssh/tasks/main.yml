@@ -10,6 +10,12 @@
     groups: sshers
     append: true
 
+- name: Add user "root" to "sshers" group
+  user:
+    name: root
+    groups: sshers
+    append: true
+
 - name: Install config for SSH server
   template:
     src: ssh_config.j2
