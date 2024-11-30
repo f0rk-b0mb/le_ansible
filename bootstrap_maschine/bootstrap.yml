@@ -21,6 +21,46 @@
 
     tasks:
 
+      - name: Check if role unattend_upgrade_deb has been executed
+        stat:
+          path: "/var/log/ansible/unattend_upgrade_deb.done"
+        register: unattend_upgrade_deb_done
+
+      - name: Run unattend_upgrade_deb role
+        include_role:
+          name: unattend_upgrade_deb
+        when: not unattend_upgrade_deb_done.stat.exists
+
+      - name: Check if role hostnames has been executed
+        stat:
+          path: "/var/log/ansible/hostnames.done"
+        register: hostnames_done
+
+      - name: Run hostnames role
+        include_role:
+          name: hostnames
+        when: not hostname_done.stat.exists
+
+      - name: Check if role users has been executed
+        stat:
+          path: "/var/log/ansible/users.done"
+        register: users_done
+
+      - name: Run users role
+        include_role:
+          name: users
+        when: not users_done.stat.exists
+        
+      - name: Check if role ssh has been executed
+        stat:
+          path: "/var/log/ansible/ssh.done"
+        register: ssh_done
+
+      - name: Run ssh role
+        include_role:
+          name: ssh
+        when: not ssh_done.stat.exists
+        
       - name: Check if role aliases has been executed
         stat:
           path: "/var/log/ansible/aliases.done"
@@ -30,3 +70,44 @@
         include_role:
           name: aliases
         when: not aliases_done.stat.exists
+        
+      - name: Check if role ufw has been executed
+        stat:
+          path: "/var/log/ansible/ufw.done"
+        register: ufw_done
+
+      - name: Run ufw role
+        include_role:
+          name: ufw
+        when: not ufw_done.stat.exists
+        
+      - name: Check if role motd has been executed
+        stat:
+          path: "/var/log/ansible/motd.done"
+        register: motd_done
+
+      - name: Run motd role
+        include_role:
+          name: motd
+        when: not motd_done.stat.exists
+        
+      - name: Check if role fail2ban has been executed
+        stat:
+          path: "/var/log/ansible/fail2ban.done"
+        register: fail2ban_done
+
+      - name: Run fail2ban role
+        include_role:
+          name: fail2ban
+        when: not fail2ban_done.stat.exists
+        
+      - name: Check if role server_config has been executed
+        stat:
+          path: "/var/log/ansible/server_config.done"
+        register: server_config_done
+
+      - name: Run server_config role
+        include_role:
+          name: server_config
+        when: not server_config_done.stat.exists
+
