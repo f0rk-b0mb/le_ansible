@@ -1,12 +1,5 @@
 ---
-- name: Check if this role has already been executed
-  stat:
-    path: "/var/log/ansible/{{ role_name }}.done"
-  register: role_check
-
-- name: Skip this role if already executed
-  meta: end_play
-  when: role_check.stat.exists
+ 
 
 # Installiere zsh und benötigte Abhängigkeiten
 - name: Install zsh and dependencies
@@ -212,7 +205,7 @@
   with_items:
     - /home/rkhunter
     - /root
-    
+
 - name: Ensure log directory exists
   file:
     path: /var/log/ansible

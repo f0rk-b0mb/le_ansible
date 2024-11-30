@@ -1,13 +1,4 @@
-- name: Check if this role has already been executed
-  stat:
-    path: "/var/log/ansible/{{ role_name }}.done"
-  register: role_check
-
-- name: Skip this role if already executed
-  meta: end_play
-  when: role_check.stat.exists
-
-- name: Ensure additional software is installed
+ - name: Ensure additional software is installed
   package:
     name:
       - tmux
