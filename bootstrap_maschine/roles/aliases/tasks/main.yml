@@ -91,6 +91,26 @@
       else
         export EDITOR='nvim'
       fi
+
+      # LS configuration:
+      export LS_OPTIONS='--color=auto'
+      eval "$(dircolors)"
+      alias ls='ls $LS_OPTIONS'
+      alias ll='ls $LS_OPTIONS -lah'
+      alias l='ls $LS_OPTIONS -lah'
+
+      # Some more alias to avoid making mistakes:
+      alias rm='rm -i'
+      alias cp='cp -i'
+      alias mv='mv -i'
+
+      # History configuration:
+      HISTCONTROL=ignoreboth
+      HISTFILESIZE=999999999
+      HISTSIZE=999999999
+      DATE="\033[0;35m"
+      DATE_NOCOLOR="\033[0m"
+      HISTTIMEFORMAT="$(echo -e ${DATE}[%F %T] $DATE_NOCOLOR)"
     dest: /home/rkhunter/.zshrc
     owner: rkhunter
     group: users
@@ -126,6 +146,26 @@
       else
         export EDITOR='nvim'
       fi
+
+      # LS configuration:
+      export LS_OPTIONS='--color=auto'
+      eval "$(dircolors)"
+      alias ls='ls $LS_OPTIONS'
+      alias ll='ls $LS_OPTIONS -lah'
+      alias l='ls $LS_OPTIONS -lah'
+
+      # Some more alias to avoid making mistakes:
+      alias rm='rm -i'
+      alias cp='cp -i'
+      alias mv='mv -i'
+
+      # History configuration:
+      HISTCONTROL=ignoreboth
+      HISTFILESIZE=999999999
+      HISTSIZE=999999999
+      DATE="\033[0;35m"
+      DATE_NOCOLOR="\033[0m"
+      HISTTIMEFORMAT="$(echo -e ${DATE}[%F %T] $DATE_NOCOLOR)"
     dest: /root/.zshrc
     owner: root
     group: root
