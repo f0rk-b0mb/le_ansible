@@ -1,6 +1,4 @@
 ---
- 
-
 - name: Create "sshers" group
   group:
     name: sshers
