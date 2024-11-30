@@ -15,6 +15,9 @@ fail2ban_maxretry: 5
 fail2ban_destemail: root@localhost
 fail2ban_sender: root@{{ ansible_fqdn }}
 
+fail2ban_packages: "{{ fail2ban_packages | default(['fail2ban']) }}"
+fail2ban_service: "{{ fail2ban_service | default('fail2ban') }}"
+
 fail2ban_configuration: []
 #  - option: loglevel
 #    value: "INFO"

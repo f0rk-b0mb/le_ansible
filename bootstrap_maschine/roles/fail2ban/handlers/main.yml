@@ -7,3 +7,10 @@
     state: restarted
   when:
     - not ansible_check_mode | bool
+
+- name: Log fail2ban configuration changes
+  ansible.builtin.debug:
+    msg: "Updated {{ item }}"
+  loop:
+    - /etc/fail2ban/fail2ban.local
+    - /etc/fail2ban/jail.local

@@ -42,6 +42,7 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
     mode: 0640
+    backup: yes
   loop: "{{ fail2ban_base_jail_configuration + fail2ban_jail_configuration }}"
   notify:
     - restart fail2ban
