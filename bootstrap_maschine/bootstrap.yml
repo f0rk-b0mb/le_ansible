@@ -4,20 +4,9 @@
     vars:
       ansible_port: "{{ aport | default('22') }}"
     # remote user
-    #remote_user: "{{ ssh_user }}"
+    remote_user: "{{ ssh_user | default('root') }}"
     # become sudo
     become: yes
-    # role to start
-    # roles:
-    #   - unattend_upgrade_deb
-    #   - hostnames
-    #   - users
-    #   - ssh
-    #   - aliases
-    #   - ufw
-    #   - motd
-    #   - fail2ban
-    #   - server_config
 
     tasks:
 
