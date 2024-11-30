@@ -66,6 +66,26 @@
     - /root
   become: yes
 
+- name: Install zsh-completions plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-completions
+    dest: "{{ item }}/.oh-my-zsh/plugins/zsh-completions"
+    version: master
+  with_items:
+    - /home/rkhunter
+    - /root
+  become: yes
+
+- name: Install zsh-history-substring-search plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-history-substring-search
+    dest: "{{ item }}/.oh-my-zsh/plugins/zsh-history-substring-search"
+    version: master
+  with_items:
+    - /home/rkhunter
+    - /root
+  become: yes
+
 # Kopiere die angepasste .zshrc mit den gewünschten Plugins
 - name: Deploy .zshrc for rkhunter
   copy:
