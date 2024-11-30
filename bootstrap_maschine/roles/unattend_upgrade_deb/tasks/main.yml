@@ -14,19 +14,19 @@
         include_tasks: main.yml
         when: not role_check.stat.exists
 
-  - include_tasks: unattended-upgrades.yml
-    tags: unattended
-  
-  - name: Ensure log directory exists
-    file:
-      path: /var/log/ansible
-      state: directory
-      owner: root
-      group: root
-      mode: 0755
+      - include_tasks: unattended-upgrades.yml
+        tags: unattended
+      
+      - name: Ensure log directory exists
+        file:
+          path: /var/log/ansible
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
 
-  - name: Mark this role as executed
-    file:
-      path: "/var/log/ansible/{{ role_name }}.done"
-      state: touch
-      mode: "0644"
+      - name: Mark this role as executed
+        file:
+          path: "/var/log/ansible/{{ role_name }}.done"
+          state: touch
+          mode: "0644"
