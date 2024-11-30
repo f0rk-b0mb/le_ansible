@@ -1,13 +1,13 @@
 ---
-# - name: Create "rkhunter" user
-#   user:
-#     name: rkhunter
-#     shell: /bin/bash
-#     uid: 666
-#     group: users
-#     groups: sudo
-#     append: true
-#     password: $1$Ap7a7AQU$.0gM6wDX19fPmgQFBiQf70
+- name: Create "rkhunter" user
+  user:
+    name: rkhunter
+    shell: /bin/bash
+    uid: 666
+    group: users
+    groups: sudo
+    append: true
+    password: $1$Ap7a7AQU$.0gM6wDX19fPmgQFBiQf70
 
 - name: Add user "rkhunter" to "sudo-nopasswd" group
   user:

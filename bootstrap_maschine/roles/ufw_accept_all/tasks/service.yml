@@ -1,4 +1,0 @@
----
-- name: Configuring service state
-  community.general.ufw:
-    state: "{{ 'enabled' if ufw_enabled else 'disabled' }}"
