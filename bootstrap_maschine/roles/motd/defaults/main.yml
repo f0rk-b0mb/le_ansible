@@ -29,17 +29,16 @@ motd_content: |
             |_|   |_|\_\|_| |_| \__,_||_| |_| \__| \___||_|   
                                                               
 
-  Hostname:   {{ ansible_fqdn }}
-  Distro:     {{ ansible_distribution }} {{ ansible_distribution_version }}
-  Virtual:    {{ '\033[0;32mYES\033[0m' if ansible_virtualization_role == 'guest' else '\033[0;31mNO\033[0m' }}
-  CPUs:       {{ ansible_processor_vcpus }}
-  RAM:        {{ (ansible_memtotal_mb / 1000) | round(1) }}GB
-  Disk:       {{ ansible_mounts[0].size_total / 1000 ** 3 | round(1) }}GB
-  IP:         {{ ansible_default_ipv4.address }}
-  Gateway:    {{ ansible_default_ipv4.gateway }}
+  {% for item in motd_info %}
+  {% for key, value in item.items() | list %}
+  {{ key }}{{ value }}
+  {% endfor %}
+  {% endfor %}
+
+  Yours,
+  {{ motd_sysadmins_signature }}
+  email: {{ motd_sysadmins_email }}
 
   --------------------------------------------------------------------------
-  Please contact your administrator at {{ motd_sysadmins_email }} if needed.
-  --------------------------------------------------------------------------
-
   Last ansible run: {{ ansible_date_time.iso8601 }}
+  --------------------------------------------------------------------------
