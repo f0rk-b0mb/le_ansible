@@ -134,9 +134,20 @@
       HISTCONTROL=ignoreboth
       HISTFILESIZE=999999999
       HISTSIZE=999999999
-      DATE="\033[0;35m"
+
+      # Farbkodierungen
+      DATE="\033[0;35m"    # Lila
       DATE_NOCOLOR="\033[0m"
-      HISTTIMEFORMAT="$(echo -e ${DATE}[%F %T] $DATE_NOCOLOR)"
+
+      # History-Formatierung
+      function zsh_history_format {
+          local timestamp
+          timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+          echo -e "${DATE}[${timestamp}]${DATE_NOCOLOR}"
+      }
+
+      alias h='fc -l 1 | sed "s/^[0-9]*/$(zsh_history_format)/"'
+
     dest: /home/rkhunter/.zshrc
     owner: rkhunter
     group: users
@@ -189,9 +200,20 @@
       HISTCONTROL=ignoreboth
       HISTFILESIZE=999999999
       HISTSIZE=999999999
-      DATE="\033[0;35m"
+
+      # Farbkodierungen
+      DATE="\033[0;35m"    # Lila
       DATE_NOCOLOR="\033[0m"
-      HISTTIMEFORMAT="$(echo -e ${DATE}[%F %T] $DATE_NOCOLOR)"
+
+      # History-Formatierung
+      function zsh_history_format {
+          local timestamp
+          timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+          echo -e "${DATE}[${timestamp}]${DATE_NOCOLOR}"
+      }
+
+      alias h='fc -l 1 | sed "s/^[0-9]*/$(zsh_history_format)/"'
+
     dest: /root/.zshrc
     owner: root
     group: root
