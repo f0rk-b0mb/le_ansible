@@ -13,7 +13,6 @@
       - name: Proceed with the role
         include_tasks: main.yml
         when: not role_check.stat.exists
-    tags: "{{ role_name }}"
 
   - include_tasks: unattended-upgrades.yml
     tags: unattended
