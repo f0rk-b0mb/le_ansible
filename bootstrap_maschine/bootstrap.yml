@@ -8,13 +8,25 @@
     # become sudo
     become: yes
     # role to start
-    roles:
-      - unattend_upgrade_deb
-      - hostnames
-      - users
-      - ssh
-      - aliases
-      - ufw
-      - motd
-      - fail2ban
-      - server_config
+    # roles:
+    #   - unattend_upgrade_deb
+    #   - hostnames
+    #   - users
+    #   - ssh
+    #   - aliases
+    #   - ufw
+    #   - motd
+    #   - fail2ban
+    #   - server_config
+
+    tasks:
+
+      - name: Check if role aliases has been executed
+        stat:
+          path: "/var/log/ansible/aliases.done"
+        register: aliases_done
+
+      - name: Run aliases role
+        include_role:
+          name: aliases
+        when: not aliases_done.stat.exists
