@@ -1,8 +1,8 @@
 ---
 # defaults file for motd
 
-motd_sysadmins_signature: "{{ motd_sysadmins_signature | default('SyS-Admin') }}"
-motd_sysadmins_email: "{{ motd_sysadmins_email | default('us@linux-engineer.net') }}"
+motd_sysadmins_signature: rkhunter
+motd_sysadmins_email: us@linux-engineer.net
 
 motd_info:
   - " System Information: "
