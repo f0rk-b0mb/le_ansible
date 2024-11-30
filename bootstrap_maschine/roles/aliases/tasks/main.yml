@@ -21,17 +21,27 @@
     shell: /usr/bin/zsh
 
 # Installiere Oh My Zsh für beide Benutzer
-- name: Install Oh My Zsh for root
-  shell: |
-    RUNZSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  args:
-    creates: /rkhunter/.oh-my-zsh
+# Installiere Oh My Zsh für root
+- name: Check if Oh My Zsh is installed for root
+  stat:
+    path: /root/.oh-my-zsh
+  register: ohmyzsh_root_installed
 
 - name: Install Oh My Zsh for root
   shell: |
     RUNZSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  args:
-    creates: /root/.oh-my-zsh
+  when: not ohmyzsh_root_installed.stat.exists
+
+# Installiere Oh My Zsh für rkhunter
+- name: Check if Oh My Zsh is installed for rkhunter
+  stat:
+    path: /home/rkhunter/.oh-my-zsh
+  register: ohmyzsh_rkhunter_installed
+
+- name: Install Oh My Zsh for rkhunter
+  shell: |
+    RUNZSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  when: not ohmyzsh_rkhunter_installed.stat.exists
 
 # Installiere Plugins für zsh
 - name: Install zsh-autosuggestions plugin
