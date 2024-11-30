@@ -1,6 +1,21 @@
 ---
- - include_tasks: install_check_before.yml
-   tags: installchecks
+  - name: Check if this role has already been executed
+    stat:
+      path: "/var/log/ansible/{{ role_name }}.done"
+    register: role_check
 
- - include_tasks: unattended-upgrades.yml
-   tags: unattended
+  - name: Skip this role if already executed
+    meta: end_play
+    when: role_check.stat.exists
+
+  - include_tasks: install_check_before.yml
+    tags: installchecks
+
+  - include_tasks: unattended-upgrades.yml
+    tags: unattended
+
+  - name: Mark this role as executed
+    file:
+      path: "/var/log/ansible/{{ role_name }}.done"
+      state: touch
+      mode: "0644"

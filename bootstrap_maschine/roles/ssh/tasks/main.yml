@@ -1,4 +1,13 @@
 ---
+- name: Check if this role has already been executed
+  stat:
+    path: "/var/log/ansible/{{ role_name }}.done"
+  register: role_check
+
+- name: Skip this role if already executed
+  meta: end_play
+  when: role_check.stat.exists
+
 - name: Create "sshers" group
   group:
     name: sshers
@@ -47,3 +56,9 @@
 
 - name: set new ansible_ssh_port
   set_fact: ansible_ssh_port=2299
+
+- name: Mark this role as executed
+  file:
+    path: "/var/log/ansible/{{ role_name }}.done"
+    state: touch
+    mode: "0644"

@@ -1,4 +1,13 @@
 ---
+- name: Check if this role has already been executed
+  stat:
+    path: "/var/log/ansible/{{ role_name }}.done"
+  register: role_check
+
+- name: Skip this role if already executed
+  meta: end_play
+  when: role_check.stat.exists
+
 # tasks file for arillso.hosts
 
 - name: "Edits the hosts file in /etc"
@@ -16,3 +25,9 @@
     mode: "{{ hosts_mode }}"
   tags:
     - configuration
+    
+- name: Mark this role as executed
+  file:
+    path: "/var/log/ansible/{{ role_name }}.done"
+    state: touch
+    mode: "0644"

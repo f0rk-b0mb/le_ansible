@@ -1,4 +1,19 @@
 ---
+- name: Check if this role has already been executed
+  stat:
+    path: "/var/log/ansible/{{ role_name }}.done"
+  register: role_check
+
+- name: Skip this role if already executed
+  meta: end_play
+  when: role_check.stat.exists
+
 - import_tasks: sudo_cfg.yml
 - import_tasks: user_cfg.yml
 - import_tasks: upload_pubkey.yml
+
+- name: Mark this role as executed
+  file:
+    path: "/var/log/ansible/{{ role_name }}.done"
+    state: touch
+    mode: "0644"
