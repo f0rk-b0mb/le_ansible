@@ -24,20 +24,20 @@
     group: root
     mode: 0644
 
-- name: Check if ssh, sshd service, or ssh.socket exists
+- name: Check if ssh.service, sshd.service, or ssh.socket exists
   shell: |
-    if systemctl list-units --type=service | grep -q sshd.service; then
+    if systemctl list-units --type=socket | grep -q ssh.socket; then
+      echo ssh.socket;
+    elif systemctl list-units --type=service | grep -q sshd.service; then
       echo sshd.service;
     elif systemctl list-units --type=service | grep -q ssh.service; then
       echo ssh.service;
-    elif systemctl list-units --type=socket | grep -q ssh.socket; then
-      echo ssh.socket;
     else
       echo none;
     fi
   register: ssh_service_check
 
-- name: Reload systemd daemon for socket changes
+- name: Reload systemd daemon for ssh.socket changes
   shell: |
     systemctl daemon-reload
   when: ssh_service_check.stdout == "ssh.socket"
@@ -46,14 +46,14 @@
   shell: |
     if [ "{{ ssh_service_check.stdout }}" = "ssh.socket" ]; then
       systemctl restart ssh.socket;
-    elif [ "{{ ssh_service_check.stdout }}" != "none" ]; then
+    elif [ "{{ ssh_service_check.stdout }}" = "sshd.service" ] || [ "{{ ssh_service_check.stdout }}" = "ssh.service" ]; then
       systemctl restart {{ ssh_service_check.stdout }};
     else
       echo "No SSH service or socket found, skipping restart.";
     fi
   changed_when: ssh_service_check.stdout != "none"
   ignore_errors: true
-
+  
 - name: set new ansible_ssh_port
   set_fact: ansible_ssh_port=2299
 
