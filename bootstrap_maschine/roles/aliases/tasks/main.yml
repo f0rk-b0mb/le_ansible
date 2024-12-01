@@ -42,7 +42,10 @@
 
 - name: Install Oh My Zsh for rkhunter
   shell: |
+    export HOME=/home/rkhunter
     RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  become: true
+  become_user: rkhunter
   when: not ohmyzsh_rkhunter_installed.stat.exists
 
 # Installiere Plugins für zsh
