@@ -37,6 +37,11 @@
     fi
   register: ssh_service_check
 
+- name: Reload systemd daemon for socket changes
+  shell: |
+    systemctl daemon-reload
+  when: ssh_service_check.stdout == "ssh.socket"
+
 - name: Restart the SSH service or socket
   shell: |
     if [ "{{ ssh_service_check.stdout }}" = "ssh.socket" ]; then
