@@ -1,4 +1,4 @@
- - name: Ensure additional software is installed
+- name: Ensure additional software is installed
   package:
     name:
       - tmux
