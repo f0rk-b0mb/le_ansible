@@ -39,10 +39,7 @@ StrictModes yes
 Subsystem sftp /usr/lib/openssh/sftp-server
 SyslogFacility AUTH
 
-# UsePAM bleibt aus, um doppeltes MOTD zu vermeiden
 UsePAM yes
-
+PrintMotd no
+PrintLastLog no
 X11Forwarding no
-
-# Hinweis-Banner für rechtliche Zwecke
-Banner /etc/issue.net
