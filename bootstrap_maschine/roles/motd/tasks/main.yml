@@ -1,33 +1,54 @@
 ---
-  - name: Check if this role has already been executed
-    stat:
-      path: "/var/log/ansible/{{ role_name }}.done"
-    register: role_check
+- name: Deaktiviere alle Standard-MOTD-Skripte
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "/etc/update-motd.d/*"
+  when: item != "/etc/update-motd.d/10-dynamic-motd"
 
-  - name: Skip this role if already executed
-    meta: end_play
-    when: role_check.stat.exists
+- name: Stelle das dynamische MOTD bereit
+  template:
+    src: 10-dynamic-motd.j2
+    dest: /etc/update-motd.d/10-dynamic-motd
+    mode: "0755"
+    owner: root
+    group: root
 
-# tasks file for motd
+- name: Deaktiviere "Last login" in SSH
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PrintLastLog"
+    line: "PrintLastLog no"
+    state: present
 
-  - name: Send login file motd
-    template:
-      src: motd.j2
-      dest: /etc/motd
-      owner: root
-      group: root
-      mode: 0644
+- name: Deaktiviere SSH-Banner
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^Banner"
+    line: "#Banner /etc/issue.net"
+    state: present
 
-  - name: Ensure log directory exists
-    file:
-      path: /var/log/ansible
-      state: directory
-      owner: root
-      group: root
-      mode: 0755
+- name: Leere die Banner-Datei (issue.net)
+  file:
+    path: /etc/issue.net
+    state: absent
 
-  - name: Mark this role as executed
-    file:
-      path: "/var/log/ansible/{{ role_name }}.done"
-      state: touch
-      mode: "0644"
+- name: SSH-Daemon neu starten
+  service:
+    name: sshd
+    state: restarted
+
+- name: Ensure log directory exists
+  file:
+    path: /var/log/ansible
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Mark this role as executed
+  file:
+    path: "/var/log/ansible/{{ role_name }}.done"
+    state: touch
+    mode: "0644"

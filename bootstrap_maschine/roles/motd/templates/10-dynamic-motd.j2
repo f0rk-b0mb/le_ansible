@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# ASCII-Art
+echo -e "\033[1;34m--------------------------------------------------------------------------\033[0m"
+echo -e "\033[1;34m                  This system is managed by Ansible\033[0m"
+echo -e "\033[1;34m--------------------------------------------------------------------------\033[0m"
+
+cat << "EOF"
+                   _     _                    _               
+                  | |   | |                  | |              
+             _ __ | | __| |__   _   _  _ __  | |_   ___  _ __ 
+            | '__|| |/ /| '_ \ | | | || '_ \ | __| / _ \| '__|
+            | |   |   < | | | || |_| || | | || |_ |  __/| |   
+            |_|   |_|\_\|_| |_| \__,_||_| |_| \__| \___||_|   
+                                                              
+EOF
+
+# Dynamische Systeminformationen
+echo -e "\033[1;32mSystem Information:\033[0m"
+echo -e "FQDN: \033[1;34m$(hostname -f)\033[0m"
+echo -e "Distro: \033[1;34m$(lsb_release -ds)\033[0m"
+echo -e "Virtual: $(if [[ $(systemd-detect-virt) != "none" ]]; then echo -e "\033[0;32mYES\033[0m"; else echo -e "\033[0;31mNO\033[0m"; fi)"
+
+# CPU-Auslastung anzeigen
+CPU_USAGE=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5); printf "%.1f", usage}')
+CPU_COUNT=$(nproc)
+if (( $(echo "$CPU_USAGE > 80" | bc -l) )); then
+    CPU_COLOR="\033[0;31m" # Rot, wenn CPU > 80%
+elif (( $(echo "$CPU_USAGE > 50" | bc -l) )); then
+    CPU_COLOR="\033[0;33m" # Gelb, wenn CPU > 50%
+else
+    CPU_COLOR="\033[0;32m" # Grün, wenn CPU < 50%
+fi
+echo -e "CPUs: \033[1;34m$CPU_COUNT\033[0m ($CPU_COLOR$CPU_USAGE% genutzt\033[0m)"
+
+# RAM-Nutzung anzeigen
+RAM_TOTAL=$(free -m | awk '/Mem:/ {printf "%.1f GB", $2/1024}')
+RAM_USED=$(free -m | awk '/Mem:/ {printf "%.1f GB", $3/1024}')
+RAM_PERCENT=$(free -m | awk '/Mem:/ {printf "%.1f", $3/$2*100}')
+if (( $(echo "$RAM_PERCENT > 80" | bc -l) )); then
+    RAM_COLOR="\033[0;31m" # Rot, wenn RAM > 80%
+elif (( $(echo "$RAM_PERCENT > 50" | bc -l) )); then
+    RAM_COLOR="\033[0;33m" # Gelb, wenn RAM > 50%
+else
+    RAM_COLOR="\033[0;32m" # Grün, wenn RAM < 50%
+fi
+echo -e "RAM: $RAM_USED / $RAM_TOTAL ($RAM_COLOR$RAM_PERCENT% genutzt\033[0m)"
+
+# Netzwerk
+IP_ADDRESS=$(hostname -I | awk '{print $1}')
+GATEWAY=$(ip route | grep default | awk '{print $3}')
+echo -e "IP: \033[1;34m$IP_ADDRESS\033[0m"
+echo -e "Gateway: \033[1;34m$GATEWAY\033[0m"
+
+# Festplattenspeicher anzeigen
+DISK_TOTAL=$(df -h / | awk 'NR==2 {print $2}')
+DISK_USED=$(df -h / | awk 'NR==2 {print $3}')
+DISK_PERCENT=$(df -h / | awk 'NR==2 {print $5}' | tr -d '%')
+if (( DISK_PERCENT > 80 )); then
+    DISK_COLOR="\033[0;31m" # Rot, wenn Disk > 80%
+elif (( DISK_PERCENT > 50 )); then
+    DISK_COLOR="\033[0;33m" # Gelb, wenn Disk > 50%
+else
+    DISK_COLOR="\033[0;32m" # Grün, wenn Disk < 50%
+fi
+echo -e "Disk: $DISK_USED / $DISK_TOTAL ($DISK_COLOR$DISK_PERCENT% genutzt\033[0m)"
+
+echo -e "\033[1;34m--------------------------------------------------------------------------\033[0m"
+echo -e "Yours, \033[1;34mrkhunter\033[0m"
+echo -e "email: \033[1;34mus@linux-engineer.net\033[0m"
+echo -e "\033[1;34m--------------------------------------------------------------------------\033[0m"
+echo -e "Last login: \033[1;34m$(last -n 1 $USER | head -n 1)\033[0m"
+echo -e "\033[1;34m--------------------------------------------------------------------------\033[0m"
